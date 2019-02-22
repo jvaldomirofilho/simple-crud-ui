@@ -1,0 +1,160 @@
+<section class="content-header">
+  </section>
+
+  <section class="content">
+    <section class="invoice">
+      <div class="row-fluid" *ngIf="!isNew && !referentiel">
+       <div class="form-row">
+          <div class="col-xs-12">
+            <h2 class="page-header">
+              <i class="fa fa-users"></i> {{pageTitle}}
+            </h2>
+        </div>
+      </div>  
+
+        <div class="form-row" >
+          <form [formGroup]="pessoaCadForm" >
+            <div class="row" >
+                <div class="col-sm-8 col-xs-12">
+                <jv-input label="Nome">
+                  <input type="text" class="form-control" placeholder="Nome"
+                    formControlName="nome"
+                    [class.is-valid]="pessoaCadForm.get('nome').valid && (pessoaCadForm.get('nome').dirty || pessoaCadForm.get('nome').touched)"
+                    [class.is-invalid]="!pessoaCadForm.get('nome').valid && (pessoaCadForm.get('nome').dirty || pessoaCadForm.get('nome').touched)" >
+                </jv-input>
+              </div>
+            </div>
+            <div class="row" >
+                <div class="col col-md-5 col-sm-12" >
+                    <jv-input label="E-mail">
+                      <input type="text" class="form-control" placeholder="E-mail"
+                        formControlName="email"
+                        [class.is-valid]="pessoaCadForm.get('email').valid && (pessoaCadForm.get('email').dirty || pessoaCadForm.get('email').touched)"
+                        [class.is-invalid]="!pessoaCadForm.get('email').valid && (pessoaCadForm.get('email').dirty || pessoaCadForm.get('email').touched)" >
+                    </jv-input>
+                  </div>
+             
+                <div class="col col-md-3 col-sm-12" >
+                  <jv-input label="CPF">
+                    <input type="text" class="form-control" placeholder="CPF"
+                      formControlName="cpf"
+                      [class.is-valid]="pessoaCadForm.get('cpf').valid && (pessoaCadForm.get('cpf').dirty || pessoaCadForm.get('cpf').touched)"
+                      [class.is-invalid]="!pessoaCadForm.get('cpf').valid && (pessoaCadForm.get('cpf').dirty || pessoaCadForm.get('cpf').touched)" >
+                  </jv-input>
+              </div>
+            
+              
+            </div>
+            <div class="row" >
+              <div class="col col-md-6 col-sm-12">
+                <p-calendar placeholder="Data de nascimento" [yearNavigator]="true" yearRange="1950:2019" formControlName="dataNascimento" dateFormat="dd/mm/yy" 
+                [class.is-valid]="pessoaCadForm.get('dataNascimento').valid && (pessoaCadForm.get('dataNascimento').dirty || pessoaCadForm.get('dataNascimento').touched)"
+                      [class.is-invalid]="!pessoaCadForm.get('dataNascimento').valid && (pessoaCadForm.get('dataNascimento').dirty || pessoaCadForm.get('dataNascimento').touched)">
+
+                </p-calendar>
+              </div>
+            </div>
+
+            <br/>
+
+            <div class="row" >
+              <div class="col col-md-6 col-sm-12"
+               *ngIf="!pessoaCadForm.get('imagem').value">
+               
+                <p-fileUpload name="imagem" mode="basic" auto="true" maxFileSize="100000000"
+                  chooseLabel="Upload de Imagem" accept="image/*,application/*"
+                  [url]="urlUploadImagem"
+                  (onUpload)="afterEndUpload($event)"></p-fileUpload>    
+              
+              </div>
+              
+              <div class="col col-md-6 col-sm-12"
+              *ngIf="pessoaCadForm.get('imagem').value">
+                <a target="_blank" pTooltip="Ver Imagem" tooltipPosition="top"
+                  [href]="pessoaCadForm.get('urlImagem').value">{{pessoaCadForm.get('imagem').value}}</a>
+                </div>
+            </div>
+
+          </form>
+        </div>
+
+
+        <!--Telefone-->
+        <div class="row" >
+          <div class="col col-12" >
+            <br/>
+            <h4>Telefones</h4>
+            <hr>
+          </div>
+        </div>
+        <div class="col col-12" >
+          <form [formGroup]="telefonesForm" >
+            <div class="row" >
+              <div class="col col-md-4 col-sm-12" >
+                <jv-input  errorMessage="Digite dois caracteres numéricos." label="DDD">
+                  <input type="text" class="form-control" placeholder="DDD"
+                    formControlName="ddd"
+                    [class.is-valid]="telefonesForm.get('ddd').valid && (telefonesForm.get('ddd').dirty || telefonesForm.get('ddd').touched)"
+                    [class.is-invalid]="!telefonesForm.get('ddd').valid && (telefonesForm.get('ddd').dirty || telefonesForm.get('ddd').touched)" >
+                </jv-input>
+              </div>
+              <div class="col col-md-4 col-sm-12" >
+                <jv-input  errorMessage="Digite entre 8 e 9 caracteres numéricos." label="Telefone">
+                  <input type="text" class="form-control" placeholder="Telefone"
+                    formControlName="numero"
+                    [class.is-valid]="telefonesForm.get('numero').valid && (telefonesForm.get('numero').dirty || telefonesForm.get('numero').touched)"
+                    [class.is-invalid]="!telefonesForm.get('numero').valid && (telefonesForm.get('numero').dirty || telefonesForm.get('numero').touched)" >
+                </jv-input>
+              </div>
+              <div class="col col-md-4 col-sm-12" >
+                  <button type="button" class="btn" (click)="adicionarTelefone()" [disabled]="!telefonesForm.valid"  >
+                      <i class="fa fa-plus" aria-hidden="true"></i> Adicionar
+                  </button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col col-12" *ngIf="pessoaSelecionada?.telefones?.length > 0" >
+          <table id="pessoas" class="table table-striped table-bordered" style="width:100%" >
+            <thead>
+              <tr>
+                <th>DDD</th>
+                <th>Telefone</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let t of pessoaSelecionada?.telefones" >
+                <td>{{ t.ddd }}</td>
+                <td>{{ t.numero }}</td>
+                <td>
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-danger" (click)="removerTelefone()" >
+                        <i class="fa fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- submeter cadastro -->
+        <div class="col col-12" >
+            <div class="row" >
+              <div class="col" >
+                <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-success" *ngIf="!isEdit" (click)="salvar()" [disabled]="!pessoaCadForm.valid" [title]="!pessoaCadForm.valid ? 'Preencha os campos obrigatórios' : 'Salvar'" >Salvar</button>
+                  <button type="button" class="btn btn-success" *ngIf="isEdit" (click)="atualizar()" [disabled]="!pessoaCadForm.valid" [title]="!pessoaCadForm.valid ? 'Preencha os campos obrigatórios' : 'Atualizar'" >Atualizar</button>
+                  <button type="button" class="btn btn-danger" routerLink="/pessoa" >Voltar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+    
+        
+        </div>
+
+  </section>
+</section>

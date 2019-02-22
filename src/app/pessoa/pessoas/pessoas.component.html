@@ -1,0 +1,106 @@
+ <!--INICIO DO CONTEUDO-->
+ 
+ <section class="content-header">
+</section>
+
+<section class="content">
+    <section class="invoice">
+            
+      <div class="form-row">
+            <div class="col-xs-12">
+              <h2 class="page-header">
+                <i class="fa fa-users"></i> Listagem de pessoas
+              </h2>
+          </div>
+        </div>  
+
+        <div class="form-row invoice-info">
+            <form [formGroup]="pessoaForm" >
+                  <div class="col-sm-3 col-xs-12">
+                      <input type="text" class="form-control" placeholder="Nome" formControlName="nome" >
+                  </div>
+                  <div class="col-sm-2 col-xs-6">
+                      <jv-input errorMessage="Digite somente números e no máximo de 11." label="CPF">
+                          <input type="text" class="form-control" placeholder="CPF"
+                            formControlName="cpf"
+                            [class.is-valid]="pessoaForm.get('cpf').valid && (pessoaForm.get('cpf').dirty || pessoaForm.get('cpf').touched)"
+                            [class.is-invalid]="!pessoaForm.get('cpf').valid && (pessoaForm.get('cpf').dirty || pessoaForm.get('cpf').touched)" >
+                       </jv-input>
+                 </div>
+      
+                 <div class="col-sm-2 col-xs-3">
+                   <button class="btn btn-primary pull-right form-control" type="button" (click)="pesquisar('1')" [disabled]="!pessoaForm.valid" >
+                      <i class="fa fa-search"></i>
+                    Pesquisar</button>
+                </div>
+      
+                <div class="col-sm-2 col-xs-3">
+                <button class="btn btn-success pull-right form-control" type="button" routerLink="/pessoa/novo" >
+                    <i class="fa fa-user-plus"></i>
+                  Cadastrar</button>
+                </div>
+
+                <div class="col-sm-2 col-xs-3">
+                  <button class="btn btn-danger pull-right form-control" type="button" (click)="gerar()" >
+                     <i class="fa fa-file-pdf-o"></i>
+                   Relatório</button>
+               </div>
+
+            </form>
+          </div>
+                              
+          <!--Table-->
+        
+
+          <div class="row" >
+              <div class="col-xs-12 table-responsive">
+
+              <div *ngIf="!page?.totalElements" class="alert alert-light" role="alert">
+                Nenhuma pessoa encontrada.
+              </div>
+  
+                <table class="table table-striped" *ngIf="page?.totalElements > 0">
+                  <thead>
+                  <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">E-mail</th> 
+                    <th class="text-center">CPF</th>
+                    <th class="text-center">Idade</th>
+                    <th class="text-center">Quantidade de telefones</th>
+                    <th class="text-center">Ações</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                      <tr *ngFor="let p of page?.content" >
+                          <td class="text-center">{{ p.id }}</td>
+                          <td class="text-center">{{ p.nome }}</td>
+                          <td class="text-center">{{ p.email }}</td>
+                          <td class="text-center">{{ p.cpf }}</td>
+                          <td class="text-center">{{ p.idade }}</td>
+                          <td class="text-center">{{ p.qtdTels }}</td>
+                          <td>
+                            <div class="btn-group" role="group">
+                              <button type="button" class="btn btn-light" [routerLink]="['/pessoa', p.id]" >
+                                <i class="fa fa-pencil"></i>
+                              </button>
+                              <button type="button" class="btn btn-danger" (click)="remover(p);" >
+                                  <i class="fa fa-trash"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                  </tbody>
+      
+               </table>
+              </div>
+              <!-- /.col -->
+            </div>
+            
+          
+     </section>
+</section>      
+
+
+
+
